@@ -1,0 +1,22 @@
+/* Styles for GitHub User Creation Date Viewer */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 600px;
+}
+
+h1 {
+  color: #212529;
+}
+
+#result, #error {
+  margin-top: 20px;
+}
+
+.btn-primary {
+  width: 100%;
+}
