@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultDiv = document.getElementById('result');
   const errorDiv = document.getElementById('error');
   const createdAtSpan = document.getElementById('github-created-at');
+  const accountAgeSpan = document.getElementById('github-account-age');
+  const statusDiv = document.getElementById('github-status');
   
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     hideResult();
     hideError();
+    updateStatus(`Looking up GitHub user: ${username}`);
     
     try {
       const userData = await fetchGitHubUser(username);
@@ -25,9 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const formattedDate = createdDate.toISOString().split('T')[0]; // YYYY-MM-DD
       
       createdAtSpan.textContent = formattedDate;
+      
+      const ageInYears = calculateAgeInYears(createdDate);
+      accountAgeSpan.textContent = `${ageInYears} years`;
+      
       showResult();
+      updateStatus(`Successfully fetched account creation date for ${username}`);
     } catch (error) {
       showError(error.message);
+      updateStatus(`Failed to fetch account creation date for ${username}: ${error.message}`);
     }
   });
   
@@ -58,6 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return await response.json();
   }
   
+  function calculateAgeInYears(createdDate) {
+    const now = new Date();
+    let years = now.getFullYear() - createdDate.getFullYear();
+    const monthDiff = now.getMonth() - createdDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < createdDate.getDate())) {
+      years--;
+    }
+    
+    return years;
+  }
+  
   function showResult() {
     resultDiv.classList.remove('d-none');
   }
@@ -73,5 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function hideError() {
     errorDiv.classList.add('d-none');
+  }
+  
+  function updateStatus(message) {
+    statusDiv.textContent = message;
   }
 });
